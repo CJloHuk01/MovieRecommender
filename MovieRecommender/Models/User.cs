@@ -7,6 +7,6 @@
         public string Email { get; set; } = null!;
         public DateTime CreatedAt { get; set; }
 
-        public List<Rating> Ratings { get; set; } = new();
+        public ICollection<Rating> Ratings { get; set; }
     }
 }

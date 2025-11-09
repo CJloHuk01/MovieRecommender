@@ -9,6 +9,8 @@
 
         public int GenreId { get; set; }
         public Genre Genre { get; set; } = null!;
-        public List<Rating> Ratings { get; set; } = new();
+      
+        public ICollection<Rating> Ratings { get; set; }
     }
 }
+//  public List<Rating> Ratings { get; set; } = new();

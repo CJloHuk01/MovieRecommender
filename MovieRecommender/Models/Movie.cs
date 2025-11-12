@@ -13,4 +13,3 @@
         public ICollection<Rating> Ratings { get; set; }
     }
 }
-//  public List<Rating> Ratings { get; set; } = new();

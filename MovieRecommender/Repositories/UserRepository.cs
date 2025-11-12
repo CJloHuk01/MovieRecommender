@@ -1,47 +1,70 @@
-﻿using MovieRecommender.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using MovieRecommender.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace MovieRecommender.Repositories
 {
     public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _context;
-
         public UserRepository(ApplicationDbContext context)
         {
             _context = context;
         }
-
-        public IEnumerable<User> GetAll() => _context.Users.ToList();
-
-        public User? GetById(int id) => _context.Users.Find(id);
-
-        public User Create(User entity)
+        public User AddUser(User user)
         {
-            _context.Users.Add(entity);
+            _context.Users.Add(user);
             _context.SaveChanges();
-            return entity;
+            return user;
+        }
+        public bool DeleteUser(int id)
+        {
+            var user = _context.Users.FirstOrDefault(u =>
+            u.Id == id);
+            if (user != null)
+            {
+                _context.Users.Remove(user);
+                _context.SaveChanges();
+                return true;
+            }
+            else return false;
+
         }
 
-        public User Update(User entity)
+        public User ExistUser(string loginOrEmail)
         {
-            _context.Users.Update(entity);
-            _context.SaveChanges();
-            return entity;
+            var user = _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefault(u =>
+            u.Username == loginOrEmail ||
+            u.Email == loginOrEmail);
+
+            return user;
         }
 
-        public bool Delete(int id)
+        public User GetUserById(int id)
         {
-            var user = GetById(id);
-            if (user == null) return false;
-
-            _context.Users.Remove(user);
-            _context.SaveChanges();
-            return true;
+            var user = _context.Users.FirstOrDefault(u =>
+            u.Id == id);
+            if (user != null)
+                return user;
+            else return null;
+        }
+        public Role? RoleExist(int id)
+        {
+            return _context.Roles.FirstOrDefault(u => u.Id == id);
+        }
+        public User UpdateUser(int id, User user)
+        {
+            var userr = _context.Users.FirstOrDefault(u =>
+            u.Id == id);
+            if (userr != null)
+            {
+                _context.Users.Update(user);
+                _context.SaveChanges();
+            }
+            return user;
         }
 
-        public bool Exists(int id) => _context.Users.Any(u => u.Id == id);
-
-        public User? GetUserByEmail(string email)
-            => _context.Users.FirstOrDefault(u => u.Email == email);
     }
 }

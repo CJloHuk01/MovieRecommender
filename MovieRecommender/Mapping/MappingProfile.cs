@@ -24,6 +24,14 @@ namespace MovieRecommender.Mapping
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.Username))
                 .ForMember(dest => dest.MovieTitle, opt => opt.MapFrom(src => src.Movie.Title));
             CreateMap<CreateRatingDTO, Rating>();
+
+            CreateMap<User, UserDTO>()
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Username))
+                .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Role.Name));
+
+            CreateMap<CreateUserRequest, User>()
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Username))
+                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
         }
     }
 }

@@ -97,6 +97,24 @@ namespace MovieRecommender.Migrations
                     b.ToTable("Ratings");
                 });
 
+            modelBuilder.Entity("MovieRecommender.Models.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+                });
+
             modelBuilder.Entity("MovieRecommender.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -110,13 +128,36 @@ namespace MovieRecommender.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
-                    b.Property<string>("Username")
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdateAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -141,7 +182,7 @@ namespace MovieRecommender.Migrations
                         .IsRequired();
 
                     b.HasOne("MovieRecommender.Models.User", "User")
-                        .WithMany("Ratings")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -149,6 +190,17 @@ namespace MovieRecommender.Migrations
                     b.Navigation("Movie");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MovieRecommender.Models.User", b =>
+                {
+                    b.HasOne("MovieRecommender.Models.Role", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("MovieRecommender.Models.Genre", b =>
@@ -161,9 +213,9 @@ namespace MovieRecommender.Migrations
                     b.Navigation("Ratings");
                 });
 
-            modelBuilder.Entity("MovieRecommender.Models.User", b =>
+            modelBuilder.Entity("MovieRecommender.Models.Role", b =>
                 {
-                    b.Navigation("Ratings");
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

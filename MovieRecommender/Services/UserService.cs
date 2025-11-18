@@ -218,9 +218,5 @@ namespace MovieRecommender.Services
             return Convert.ToBase64String(hashBytes);
         }
 
-        public object GetUserById(int id)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

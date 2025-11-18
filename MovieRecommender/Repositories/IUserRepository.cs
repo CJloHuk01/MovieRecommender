@@ -2,9 +2,9 @@
 
 namespace MovieRecommender.Repositories
 {
-    public interface IUserRepository : IRepository<User>
+    public interface IUserRepository 
     {
-        User GetUserById(int id);
+        User GetById(int id);
         User AddUser(User user);
         bool DeleteUser(int id);
         User UpdateUser(int id, User user);

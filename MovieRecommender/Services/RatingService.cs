@@ -29,11 +29,39 @@ namespace MovieRecommender.Services
             if (user == null || movie == null)
                 throw new ArgumentException("User or Movie not found");
 
+            if (HasUserRatedMovie(createRatingDto.UserId, createRatingDto.MovieId))
+            {
+                throw new InvalidOperationException("User has already rated this movie. Use update instead.");
+            }
+
+            if (createRatingDto.Score < 1 || createRatingDto.Score > 10)
+            {
+                throw new ArgumentException("Score must be between 1 and 10");
+            }
+
             var rating = _mapper.Map<Rating>(createRatingDto);
             rating.RatedAt = DateTime.UtcNow;
 
             var createdRating = _ratingRepository.Create(rating);
             return _mapper.Map<RatingDTO>(createdRating);
+        }
+        public RatingDTO UpdateRating(int ratingId, UpdateRatingDTO updateRatingDto)
+        {
+            var existingRating = _ratingRepository.GetById(ratingId);
+            if (existingRating == null)
+                throw new ArgumentException("Rating not found");
+
+            if (updateRatingDto.Score < 1 || updateRatingDto.Score > 10)
+            {
+                throw new ArgumentException("Score must be between 1 and 10");
+            }
+
+            existingRating.Score = updateRatingDto.Score;
+            existingRating.Review = updateRatingDto.Review;
+            existingRating.RatedAt = DateTime.UtcNow; 
+
+            var updatedRating = _ratingRepository.Update(existingRating);
+            return _mapper.Map<RatingDTO>(updatedRating);
         }
 
         public IEnumerable<RatingDTO> GetUserRatings(int userId)

@@ -8,6 +8,5 @@ namespace MovieRecommender.Services
         AuthResponse Register(CreateUserRequest createUserRequest);
         AuthResponse RefreshToken(string refreshToken);
         bool ValidateToken(string token);
-        object GetUserById(int id);
     }
 }

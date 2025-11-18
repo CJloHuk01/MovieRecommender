@@ -1,4 +1,5 @@
-﻿using MovieRecommender.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using MovieRecommender.Models;
 
 namespace MovieRecommender.Repositories
 {
@@ -11,9 +12,23 @@ namespace MovieRecommender.Repositories
             _context = context;
         }
 
-        public IEnumerable<Rating> GetAll() => _context.Ratings.ToList();
+        public Rating? GetById(int id)
+        {
+            return _context.Ratings
+                .Include(r => r.User) 
+                .Include(r => r.Movie) 
+                .ThenInclude(m => m.Genre) 
+                .FirstOrDefault(r => r.Id == id);
+        }
 
-        public Rating? GetById(int id) => _context.Ratings.Find(id);
+        public IEnumerable<Rating> GetAll()
+        {
+            return _context.Ratings
+                .Include(r => r.User)
+                .Include(r => r.Movie)
+                .ThenInclude(m => m.Genre)
+                .ToList();
+        }
 
         public Rating Create(Rating entity)
         {
@@ -46,5 +61,17 @@ namespace MovieRecommender.Repositories
 
         public IEnumerable<Rating> GetRatingsByMovie(int movieId)
             => _context.Ratings.Where(r => r.MovieId == movieId).ToList();
+
+        public bool HasUserRatedMovie(int userId, int movieId)
+        {
+            return _context.Ratings
+                .Any(r => r.UserId == userId && r.MovieId == movieId);
+        }
+
+        public Rating? GetUserRatingForMovie(int userId, int movieId)
+        {
+            return _context.Ratings
+                .FirstOrDefault(r => r.UserId == userId && r.MovieId == movieId);
+        }   
     }
 }

@@ -12,9 +12,19 @@ namespace MovieRecommender.Repositories
             _context = context;
         }
 
-        public IEnumerable<Genre> GetAll() => _context.Genres.ToList();
+        public Genre? GetById(int id)
+        {
+            return _context.Genres
+                .Include(g => g.Movies) 
+                .FirstOrDefault(g => g.Id == id);
+        }
 
-        public Genre? GetById(int id) => _context.Genres.Find(id);
+        public IEnumerable<Genre> GetAll()
+        {
+            return _context.Genres
+                .Include(g => g.Movies) 
+                .ToList();
+        }
 
         public Genre Create(Genre entity)
         {

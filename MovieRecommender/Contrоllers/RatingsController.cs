@@ -43,5 +43,23 @@ namespace MovieRecommender.Contrоllers
             var hasRated = _ratingService.HasUserRatedMovie(userId, movieId);
             return Ok(new { hasRated });
         }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateRating(int id, [FromBody] UpdateRatingDTO updateRatingDto)
+        {
+            try
+            {
+                var rating = _ratingService.UpdateRating(id, updateRatingDto);
+                return Ok(rating);
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }

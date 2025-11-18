@@ -6,5 +6,7 @@ namespace MovieRecommender.Repositories
     {
         IEnumerable<Rating> GetRatingsByUser(int userId);
         IEnumerable<Rating> GetRatingsByMovie(int movieId);
+        bool HasUserRatedMovie(int userId, int movieId); 
+        Rating? GetUserRatingForMovie(int userId, int movieId);
     }
 }

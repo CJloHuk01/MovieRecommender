@@ -2,68 +2,65 @@
 using Microsoft.AspNetCore.Mvc;
 using MovieRecommender.Models;
 using MovieRecommender.Models.DTO;
+using MovieRecommender.Repositories;
 using MovieRecommender.Services;
 
 namespace MovieRecommender.Contrоllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly IUserRepository _userRepository;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserRepository userRepository)
         {
-            _userService = userService;
+            _userRepository = userRepository;
         }
 
-        
+        //[HttpGet]
+        //public ActionResult<IEnumerable<User>> Get()
+        //{
+        //    return Ok(_userRepository.GetAll());
+        //}
 
         [HttpGet("{id}")]
         public IActionResult GetUserById(int id)
         {
-            var user = _userService.GetUserById(id);
+            var user = _userRepository.GetById(id);
             if (user == null)
                 return NotFound(new { message = $"Пользователь с ID {id} не найден" });
 
             return Ok(user);
         }
 
-        [HttpPost("register")]
-        public IActionResult Register([FromBody] CreateUserRequest createUserRequest)
+        [HttpPost]
+        public IActionResult CreateUser([FromBody] User user)
         {
-            var result = _userService.Register(createUserRequest);
-            if (!result.Success)
-                return BadRequest(new { message = result.ErrorMessage });
-
-            return Ok(result);
+            var createdUser = _userRepository.AddUser(user);
+            return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
         }
 
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest loginRequest)
+        [HttpPut("{id}")]
+        public IActionResult UpdateUser(int id, [FromBody] User user)
         {
-            var result = _userService.Login(loginRequest);
-            if (!result.Success)
-                return Unauthorized(new { message = result.ErrorMessage });
+            var updatedUser = _userRepository.UpdateUser(id, user);
+            if (updatedUser == null)
+                return NotFound(new { message = $"Пользователь с ID {id} не найден" });
 
-            return Ok(result);
+            return Ok(updatedUser);
         }
 
-        [HttpPost("validate-token")]
-        public IActionResult ValidateToken([FromBody] string token)
+        [HttpDelete("{id}")]
+        public IActionResult DeleteUser(int id)
         {
-            var isValid = _userService.ValidateToken(token);
-            return Ok(new { valid = isValid });
+            var result = _userRepository.DeleteUser(id);
+            if (!result)
+                return NotFound(new { message = $"Пользователь с ID {id} не найден" });
+
+            return NoContent();
         }
-
-        //[HttpDelete("{id}")]
-        //public IActionResult DeleteUser(int id)
-        //{
-        //    var result = _userService.DeleteUser(id);
-        //    if (!result)
-        //        return NotFound(new { message = $"Пользователь с ID {id} не найден" });
-
-        //    return NoContent();
-        //}
     }
 }
+    
+

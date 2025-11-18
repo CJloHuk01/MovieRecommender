@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MovieRecommender.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace MovieRecommender.Repositories
 {
@@ -42,29 +41,29 @@ namespace MovieRecommender.Repositories
             return user;
         }
 
-        public User GetUserById(int id)
-        {
-            var user = _context.Users.FirstOrDefault(u =>
-            u.Id == id);
-            if (user != null)
-                return user;
-            else return null;
-        }
+        public IEnumerable<User> GetAll() => _context.Users.ToList();
+
+        public User? GetById(int id) => _context.Users.FirstOrDefault(x => x.Id == id);
+
         public Role? RoleExist(int id)
         {
             return _context.Roles.FirstOrDefault(u => u.Id == id);
         }
-        public User UpdateUser(int id, User user)
+        public User UpdateUser(int id, User updatedUser)
         {
-            var userr = _context.Users.FirstOrDefault(u =>
-            u.Id == id);
-            if (userr != null)
+            var existingUser = _context.Users.FirstOrDefault(u => u.Id == id);
+            if (existingUser != null)
             {
-                _context.Users.Update(user);
+                existingUser.Username = updatedUser.Username;
+                existingUser.Email = updatedUser.Email;
+                existingUser.UpdateAt = DateTime.UtcNow;
+
                 _context.SaveChanges();
+                return existingUser;
             }
-            return user;
+            return null;
         }
+
 
     }
 }

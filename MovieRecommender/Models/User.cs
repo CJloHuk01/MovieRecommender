@@ -24,6 +24,6 @@ namespace MovieRecommender.Models
         public bool IsActive { get; set; }
         public int RoleId { get; set; }
         public Role Role { get; set; } = null!;
-        public object Ratings { get; internal set; }
+        public ICollection<Rating> Ratings { get; set; } = new List<Rating>();
     }
 }

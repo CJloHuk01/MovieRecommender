@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Microsoft.IdentityModel.Tokens;
+using System.Net;
 using System.Text.Json;
 
 namespace MovieRecommender
@@ -30,12 +31,21 @@ namespace MovieRecommender
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+            if (exception is SecurityTokenException)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+            }
+            else
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            }
 
             var response = new
             {
-                error = "An internal server error occurred",
+                error = "An error occurred",
                 message = exception.Message,
+                statusCode = context.Response.StatusCode,
                 timestamp = DateTime.UtcNow
             };
 

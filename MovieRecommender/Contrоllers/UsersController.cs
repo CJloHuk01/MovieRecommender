@@ -19,9 +19,10 @@ namespace MovieRecommender.Contrоllers
         }
 
         //[HttpGet]
-        //public ActionResult<IEnumerable<User>> Get()
+        //public IActionResult GetAllUsers()
         //{
-        //    return Ok(_userRepository.GetAll());
+        //    var users = _userRepository.GetAll();
+        //    return Ok(users);
         //}
 
         [HttpGet("{id}")]
@@ -32,23 +33,6 @@ namespace MovieRecommender.Contrоllers
                 return NotFound(new { message = $"Пользователь с ID {id} не найден" });
 
             return Ok(user);
-        }
-
-        [HttpPost]
-        public IActionResult CreateUser([FromBody] User user)
-        {
-            var createdUser = _userRepository.AddUser(user);
-            return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
-        }
-
-        [HttpPut("{id}")]
-        public IActionResult UpdateUser(int id, [FromBody] User user)
-        {
-            var updatedUser = _userRepository.UpdateUser(id, user);
-            if (updatedUser == null)
-                return NotFound(new { message = $"Пользователь с ID {id} не найден" });
-
-            return Ok(updatedUser);
         }
 
         [HttpDelete("{id}")]

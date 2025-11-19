@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MovieRecommender.Models.DTO;
 using MovieRecommender.Services;
 
 namespace MovieRecommender.Contrоllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
+    [Authorize]
     public class GenresController : ControllerBase
     {
         private readonly IGenreService _genreService;
@@ -17,6 +19,7 @@ namespace MovieRecommender.Contrоllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult GetAllGenres()
         {
             var genres = _genreService.GetAllGenres();
@@ -24,6 +27,7 @@ namespace MovieRecommender.Contrоllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public IActionResult GetGenreById(int id)
         {
             var genre = _genreService.GetGenreById(id);
@@ -34,6 +38,7 @@ namespace MovieRecommender.Contrоllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateGenre([FromBody] CreateGenreDTO createGenreDto)
         {
             var genre = _genreService.CreateGenre(createGenreDto);
@@ -41,6 +46,7 @@ namespace MovieRecommender.Contrоllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteGenre(int id)
         {
             var result = _genreService.DeleteGenre(id);

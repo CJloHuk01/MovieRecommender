@@ -10,6 +10,8 @@ namespace MovieRecommender.Models.DTO
         [Required(ErrorMessage = "Необходимо ввести пароль")]
         [MinLength(8, ErrorMessage = "Минимальная длина пароля 8 символов")]
         public string Password { get; set; } = string.Empty;
-        public int RoleId { get; set; }
+
+        [Required(ErrorMessage = "Необходимо указать роль")]
+        public int RoleId { get; set; } = 2;
     }
 }

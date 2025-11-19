@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MovieRecommender.Models.DTO;
 using MovieRecommender.Services;
 
 namespace MovieRecommender.Contrоllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
+    [Authorize]
     public class RatingsController : ControllerBase
     {
         private readonly IRatingService _ratingService;
@@ -24,6 +26,7 @@ namespace MovieRecommender.Contrоllers
         }
 
         [HttpGet("movie/{movieId}")]
+        [AllowAnonymous]
         public IActionResult GetMovieRatings(int movieId)
         {
             var ratings = _ratingService.GetMovieRatings(movieId);
@@ -42,24 +45,6 @@ namespace MovieRecommender.Contrоllers
         {
             var hasRated = _ratingService.HasUserRatedMovie(userId, movieId);
             return Ok(new { hasRated });
-        }
-
-        [HttpPut("{id}")]
-        public IActionResult UpdateRating(int id, [FromBody] UpdateRatingDTO updateRatingDto)
-        {
-            try
-            {
-                var rating = _ratingService.UpdateRating(id, updateRatingDto);
-                return Ok(rating);
-            }
-            catch (ArgumentException ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
         }
     }
 }

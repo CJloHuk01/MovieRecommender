@@ -20,7 +20,9 @@ namespace MovieRecommender.Services
             _jwtSett = jwtConf.Value;
             _userRepository = userRepo;
         }
-
+        /// <summary>
+        /// Аутентификация пользователя
+        /// </summary>
         public AuthResponse Login(LoginRequest loginRequest)
         {
             try
@@ -80,7 +82,9 @@ namespace MovieRecommender.Services
                 };
             }
         }
-
+        /// <summary>
+        /// Регистрация нового пользователя
+        /// </summary>
         public AuthResponse Register(CreateUserRequest createUserRequest)
         {
             try

@@ -28,16 +28,7 @@ namespace MovieRecommender.Services
             try
             {
                 var user = _userRepository.ExistUser(loginRequest.LoginOrEmail);
-                var role = _userRepository.RoleExist(loginRequest.RoleId);
-
-                if (role == null)
-                {
-                    return new AuthResponse
-                    {
-                        Success = false,
-                        ErrorMessage = "Такой роли не существует"
-                    };
-                }
+                
 
                 if (user == null)
                     return new AuthResponse

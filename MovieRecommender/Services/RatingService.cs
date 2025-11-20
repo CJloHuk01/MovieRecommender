@@ -45,22 +45,16 @@ namespace MovieRecommender.Services
             var createdRating = _ratingRepository.Create(rating);
             return _mapper.Map<RatingDTO>(createdRating);
         }
-        public RatingDTO UpdateRating(int ratingId, UpdateRatingDTO updateRatingDto)
+        public RatingDTO? UpdateRating(int id, UpdateRatingDTO updateRatingDto)
         {
-            var existingRating = _ratingRepository.GetById(ratingId);
-            if (existingRating == null)
-                throw new ArgumentException("Rating not found");
-
-            if (updateRatingDto.Score < 1 || updateRatingDto.Score > 10)
-            {
-                throw new ArgumentException("Score must be between 1 and 10");
-            }
+            var existingRating = _ratingRepository.GetById(id);
+            if (existingRating == null) return null;
 
             existingRating.Score = updateRatingDto.Score;
             existingRating.Review = updateRatingDto.Review;
-            existingRating.RatedAt = DateTime.UtcNow; 
 
             var updatedRating = _ratingRepository.Update(existingRating);
+            var ratingWithIncludes = _ratingRepository.GetById(id);
             return _mapper.Map<RatingDTO>(updatedRating);
         }
 

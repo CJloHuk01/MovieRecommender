@@ -18,12 +18,21 @@ namespace MovieRecommender.Contrоllers
             _userRepository = userRepository;
         }
 
-        //[HttpGet]
-        //public IActionResult GetAllUsers()
-        //{
-        //    var users = _userRepository.GetAll();
-        //    return Ok(users);
-        //}
+        [HttpGet]
+        public IActionResult GetAllUsers()
+        {
+            var users = _userRepository.GetAll();
+
+            var userDtos = users.Select(user => new UserDTO
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Email = user.Email,
+                RoleName = user.Role.Name
+            }).ToList();
+
+            return Ok(userDtos);
+        }
 
         [HttpGet("{id}")]
         public IActionResult GetUserById(int id)
@@ -43,6 +52,19 @@ namespace MovieRecommender.Contrоllers
                 return NotFound(new { message = $"Пользователь с ID {id} не найден" });
 
             return NoContent();
+        }
+        [HttpPut("{id}")]
+        public IActionResult UpdateUser(int id, [FromBody] User user)
+        {
+            var updatedUser = _userRepository.UpdateUser(id, user);
+            if (updatedUser == null)
+                return NotFound(new { message = $"Пользователь с ID {id} не найден" });
+            updatedUser.Username = user.Username;
+            updatedUser.Email = user.Email;
+            updatedUser.IsActive = user.IsActive;
+            updatedUser.UpdateAt = DateTime.UtcNow;
+
+            return Ok(updatedUser);
         }
     }
 }

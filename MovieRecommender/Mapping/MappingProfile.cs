@@ -24,6 +24,8 @@ namespace MovieRecommender.Mapping
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.Username))
                 .ForMember(dest => dest.MovieTitle, opt => opt.MapFrom(src => src.Movie.Title));
             CreateMap<CreateRatingDTO, Rating>();
+            CreateMap<UpdateRatingDTO, Rating>()
+                .ForMember(dest => dest.RatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
 
             CreateMap<User, UserDTO>()
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Username))
@@ -33,8 +35,7 @@ namespace MovieRecommender.Mapping
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Username))
                 .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
 
-            CreateMap<UpdateRatingDTO, Rating>()
-                .ForMember(dest => dest.RatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
+            
         }
     }
 }

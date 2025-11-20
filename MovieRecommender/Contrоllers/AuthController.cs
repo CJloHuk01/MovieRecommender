@@ -42,15 +42,5 @@ namespace MovieRecommender.Contrоllers
             return Ok(result);
         }
 
-        [HttpPost("validate-token")]
-        public IActionResult ValidateToken([FromBody] string token = "") 
-        {
-            if (string.IsNullOrEmpty(token))
-                return BadRequest(new { error = "Token is required" });
-
-            var isValid = _userService.ValidateToken(token);
-            return Ok(new { valid = isValid });
-        }
-
     }
 }

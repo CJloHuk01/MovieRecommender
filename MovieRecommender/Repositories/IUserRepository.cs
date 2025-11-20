@@ -2,7 +2,7 @@
 
 namespace MovieRecommender.Repositories
 {
-    public interface IUserRepository 
+    public interface IUserRepository : IRepository<User>
     {
         User GetById(int id);
         User AddUser(User user);

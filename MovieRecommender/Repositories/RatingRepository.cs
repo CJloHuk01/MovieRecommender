@@ -41,7 +41,11 @@ namespace MovieRecommender.Repositories
         {
             _context.Ratings.Update(entity);
             _context.SaveChanges();
-            return entity;
+
+            return _context.Ratings
+                .Include(r => r.User)
+                .Include(r => r.Movie)
+                .FirstOrDefault(r => r.Id == entity.Id) ?? entity;
         }
 
         public bool Delete(int id)
@@ -57,10 +61,22 @@ namespace MovieRecommender.Repositories
         public bool Exists(int id) => _context.Ratings.Any(r => r.Id == id);
 
         public IEnumerable<Rating> GetRatingsByUser(int userId)
-            => _context.Ratings.Where(r => r.UserId == userId).ToList();
+        {
+            return _context.Ratings
+                .Where(r => r.UserId == userId)
+                .Include(r => r.User)     
+                .Include(r => r.Movie)    
+                .ToList();
+        }
 
         public IEnumerable<Rating> GetRatingsByMovie(int movieId)
-            => _context.Ratings.Where(r => r.MovieId == movieId).ToList();
+        {
+            return _context.Ratings
+                .Where(r => r.MovieId == movieId)
+                .Include(r => r.User)     
+                .Include(r => r.Movie)    
+                .ToList();
+        }
 
         public bool HasUserRatedMovie(int userId, int movieId)
         {

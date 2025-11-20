@@ -39,6 +39,18 @@ namespace MovieRecommender.Contrоllers
             var rating = _ratingService.AddRating(createRatingDto);
             return Ok(rating);
         }
+        /// <summary>
+        /// Обновить оценку
+        /// </summary>
+        [HttpPut("{id}")]
+        public IActionResult UpdateRating(int id, [FromBody] UpdateRatingDTO updateRatingDto)
+        {
+            var rating = _ratingService.UpdateRating(id, updateRatingDto);
+            if (rating == null)
+                return NotFound(new { message = $"Оценка с ID {id} не найдена" });
+
+            return Ok(rating);
+        }
 
         [HttpGet("user/{userId}/movie/{movieId}")]
         public IActionResult HasUserRatedMovie(int userId, int movieId)

@@ -9,17 +9,17 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
+// services
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Конфигурация JWT
+// JWT
 builder.Services.Configure<JwtConfiguration>(
     builder.Configuration.GetSection("Jwt"));
 
-// Настроить систему аутентификации
+// аутентификация
 var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtConfiguration>();
 var secretKey = Encoding.ASCII.GetBytes(jwtSettings.SecretKey);
 
@@ -47,17 +47,15 @@ builder.Services.AddAuthentication(opt =>
 
 builder.Services.AddAuthorization();
 
-// Database
+// бд
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
 
-// Repositories
 builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRatingRepository, RatingRepository>();
 
-// Services
 builder.Services.AddScoped<IMovieService, MovieService>();
 builder.Services.AddScoped<IRatingService, RatingService>();
 builder.Services.AddScoped<IGenreService, GenreService>();
@@ -65,7 +63,6 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

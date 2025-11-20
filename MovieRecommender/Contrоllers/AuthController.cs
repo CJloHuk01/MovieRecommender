@@ -26,7 +26,7 @@ namespace MovieRecommender.Contrоllers
             if (!result.Success)
                 return BadRequest(new { error = result.ErrorMessage });
 
-            return Ok(new { userId = result.User.Id, message = "User registered successfully" });
+            return Ok(new { userId = result.User.Id, message = "Пользователь успешно зарегистрировался" });
         }
 
         /// <summary>

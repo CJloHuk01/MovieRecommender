@@ -23,7 +23,7 @@ namespace MovieRecommender
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An unhandled exception has occurred");
+                _logger.LogError(ex, "Произошло необработанное исключение");
                 await HandleExceptionAsync(context, ex);
             }
         }
@@ -43,7 +43,7 @@ namespace MovieRecommender
 
             var response = new
             {
-                error = "An error occurred",
+                error = "Произошла ошибка",
                 message = exception.Message,
                 statusCode = context.Response.StatusCode,
                 timestamp = DateTime.UtcNow

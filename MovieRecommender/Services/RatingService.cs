@@ -27,16 +27,16 @@ namespace MovieRecommender.Services
             var movie = _movieRepository.GetById(createRatingDto.MovieId);
 
             if (user == null || movie == null)
-                throw new ArgumentException("User or Movie not found");
+                throw new ArgumentException("Пользователь или фильм не найдены");
 
             if (HasUserRatedMovie(createRatingDto.UserId, createRatingDto.MovieId))
             {
-                throw new InvalidOperationException("User has already rated this movie. Use update instead.");
+                throw new InvalidOperationException("Пользователь уже оценил этот фильм. Вместо этого используйте обновить");
             }
 
             if (createRatingDto.Score < 1 || createRatingDto.Score > 10)
             {
-                throw new ArgumentException("Score must be between 1 and 10");
+                throw new ArgumentException("Оценка должна быть от 1 до 10");
             }
 
             var rating = _mapper.Map<Rating>(createRatingDto);
